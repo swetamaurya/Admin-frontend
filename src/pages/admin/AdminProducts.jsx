@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaEye, FaChevronLeft, FaChevronRight, FaTimes, FaUpload, FaBoxOpen } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 import adminApi from '../../services/adminApi';
 import { getImageUrl } from '../../utils/imageUtils';
 
@@ -41,7 +42,7 @@ const AdminProducts = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
-    category: '',
+    category: 'Other', // Default category
     brand: 'Royal Thread',
     meterial: '',
     price: '',
@@ -56,6 +57,13 @@ const AdminProducts = () => {
   });
 
   useEffect(() => {
+    // Debug: Check authentication status
+    const token = localStorage.getItem('adminToken');
+    const user = localStorage.getItem('adminUser');
+    console.log('=== ADMIN PRODUCTS PAGE DEBUG ===');
+    console.log('Admin token:', token ? token.substring(0, 20) + '...' : 'No token');
+    console.log('Admin user:', user);
+    
     fetchProducts();
   }, [currentPage, searchTerm]);
 
@@ -88,29 +96,32 @@ const AdminProducts = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     
+    console.log('=== PRODUCT CREATION DEBUG ===');
+    console.log('Form data:', newProduct);
+    
     // Frontend validation
     if (!newProduct.name.trim()) {
-      alert('Product name is required');
+      toast.error('Product name is required');
       return;
     }
     if (!newProduct.description.trim()) {
-      alert('Product description is required');
+      toast.error('Product description is required');
       return;
     }
     if (!newProduct.meterial.trim()) {
-      alert('Product material is required');
+      toast.error('Product material is required');
       return;
     }
     if (!newProduct.price || newProduct.price <= 0) {
-      alert('Valid price is required');
+      toast.error('Valid price is required');
       return;
     }
     if (!newProduct.stock || newProduct.stock <= 0) {
-      alert('Valid stock quantity is required');
+      toast.error('Valid stock quantity is required');
       return;
     }
     if (!newProduct.images || newProduct.images.length === 0) {
-      alert('At least one product image is required');
+      toast.error('At least one product image is required');
       return;
     }
     
@@ -140,38 +151,47 @@ const AdminProducts = () => {
       sizes: finalSizes.filter(size => size && size.trim())
     };
     
+    console.log('Final product data being sent:', cleanProduct);
     
     try {
-      await adminApi.createProduct(cleanProduct);
+      const response = await adminApi.createProduct(cleanProduct);
+      console.log('Product creation response:', response);
       
-      // Close modal and reset form
-      setShowAddModal(false);
-      setColorInputValue('');
-      setSizeInputValue('');
-      setNewProduct({
-        name: '',
-        description: '',
-        category: '',
-        brand: 'Royal Thread',
-        meterial: '',
-        price: '',
-        mrp: '',
-        stock: '',
-        specialFeature: '',
-        images: [],
-        colors: [],
-        sizes: [],
-        isActive: true,
-        isFeatured: false
-      });
-      
-      // Refresh the page to ensure clean state
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      if (response.success) {
+        toast.success('Product created successfully!');
+        
+        // Close modal and reset form
+        setShowAddModal(false);
+        setColorInputValue('');
+        setSizeInputValue('');
+        setNewProduct({
+          name: '',
+          description: '',
+          category: 'Other', // Reset to default
+          brand: 'Royal Thread',
+          meterial: '',
+          price: '',
+          mrp: '',
+          stock: '',
+          specialFeature: '',
+          images: [],
+          colors: [],
+          sizes: [],
+          isActive: true,
+          isFeatured: false
+        });
+        
+        // Refresh products list and go to first page
+        setCurrentPage(1);
+        setSearchTerm(''); // Clear search
+        setLocalSearchTerm(''); // Clear local search
+        await fetchProducts();
+      } else {
+        toast.error('Error creating product: ' + (response.message || 'Unknown error'));
+      }
     } catch (error) {
       console.error('Error adding product:', error);
-      alert('Error adding product: ' + (error.message || 'Unknown error'));
+      toast.error('Error adding product: ' + (error.message || 'Unknown error'));
     }
   };
 
@@ -180,27 +200,27 @@ const AdminProducts = () => {
     
     // Frontend validation
     if (!editingProduct.name.trim()) {
-      alert('Product name is required');
+      toast.error('Product name is required');
       return;
     }
     if (!editingProduct.description.trim()) {
-      alert('Product description is required');
+      toast.error('Product description is required');
       return;
     }
     if (!editingProduct.meterial.trim()) {
-      alert('Product material is required');
+      toast.error('Product material is required');
       return;
     }
     if (!editingProduct.price || editingProduct.price <= 0) {
-      alert('Valid price is required');
+      toast.error('Valid price is required');
       return;
     }
     if (!editingProduct.stock || editingProduct.stock <= 0) {
-      alert('Valid stock quantity is required');
+      toast.error('Valid stock quantity is required');
       return;
     }
     if (!editingProduct.images || editingProduct.images.length === 0) {
-      alert('At least one product image is required');
+      toast.error('At least one product image is required');
       return;
     }
     
@@ -237,35 +257,27 @@ const AdminProducts = () => {
     console.log('Primary images:', cleanEditingProduct.images?.filter(img => img.isPrimary === true));
     
     try {
-      await adminApi.updateProduct(editingProduct._id, cleanEditingProduct);
+      const response = await adminApi.updateProduct(editingProduct._id, cleanEditingProduct);
       
-      // Close modal and reset form
-      setEditingProduct(null);
-      if (editColorInputRef.current) editColorInputRef.current.value = '';
-      if (editSizeInputRef.current) editSizeInputRef.current.value = '';
-      
-      // Clear all cache and force refresh product data
-      if (window.adminApiCache) {
-        window.adminApiCache.clear();
+      if (response.success) {
+        toast.success('Product updated successfully!');
+        
+        // Close modal and reset form
+        setEditingProduct(null);
+        if (editColorInputRef.current) editColorInputRef.current.value = '';
+        if (editSizeInputRef.current) editSizeInputRef.current.value = '';
+        
+        // Refresh products list and go to first page
+        setCurrentPage(1);
+        setSearchTerm(''); // Clear search
+        setLocalSearchTerm(''); // Clear local search
+        await fetchProducts();
+      } else {
+        toast.error('Error updating product: ' + (response.message || 'Unknown error'));
       }
-      await fetchProducts();
-      
-      // Force browser cache clear and refresh
-      setTimeout(() => {
-        // Clear browser cache
-        if ('caches' in window) {
-          caches.keys().then(names => {
-            names.forEach(name => {
-              caches.delete(name);
-            });
-          });
-        }
-        // Force reload with cache bypass
-        window.location.reload(true);
-      }, 1000);
     } catch (error) {
       console.error('Error updating product:', error);
-      alert('Error updating product: ' + (error.message || 'Unknown error'));
+      toast.error('Error updating product: ' + (error.message || 'Unknown error'));
     }
   };
 
@@ -277,14 +289,20 @@ const AdminProducts = () => {
   const confirmDeleteProduct = async () => {
     if (productToDelete) {
       try {
-        await adminApi.deleteProduct(productToDelete._id);
-        // Refresh the page to ensure clean state
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        const response = await adminApi.deleteProduct(productToDelete._id);
+        if (response.success) {
+          toast.success('Product deleted successfully!');
+          // Refresh products list and go to first page
+          setCurrentPage(1);
+          setSearchTerm(''); // Clear search
+          setLocalSearchTerm(''); // Clear local search
+          await fetchProducts();
+        } else {
+          toast.error('Error deleting product: ' + (response.message || 'Unknown error'));
+        }
       } catch (error) {
         console.error('Error deleting product:', error);
-        alert('Error deleting product: ' + (error.message || 'Unknown error'));
+        toast.error('Error deleting product: ' + (error.message || 'Unknown error'));
       }
     }
     setShowDeleteConfirm(false);
@@ -329,14 +347,14 @@ const AdminProducts = () => {
     // Validate file size (10MB limit)
     if (file.size > 10 * 1024 * 1024) {
       const error = 'File size too large. Please select an image smaller than 10MB.';
-      alert(error);
+      toast.error(error);
       return Promise.reject(error);
     }
     
     // Validate file type
     if (!file.type.startsWith('image/')) {
       const error = 'Please select a valid image file.';
-      alert(error);
+      toast.error(error);
       return Promise.reject(error);
     }
     
@@ -374,17 +392,18 @@ const AdminProducts = () => {
           
           // Show success message
           console.log('Image uploaded successfully:', file.name);
+          toast.success('Image uploaded successfully!');
           resolve(response.data);
         } catch (error) {
           console.error('Error uploading image:', error);
-          alert('Failed to upload image: ' + error.message);
+          toast.error('Failed to upload image: ' + error.message);
           reject(error);
         }
       };
       
       reader.onerror = () => {
         const error = 'Failed to process image file';
-        alert(error);
+        toast.error(error);
         reject(error);
       };
       

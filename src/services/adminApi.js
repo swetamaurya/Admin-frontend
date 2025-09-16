@@ -206,6 +206,11 @@ const adminApi = {
   // Product Management
   getProducts: async (page = 1, limit = 10, search = '') => {
     try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('Admin authentication required. Please login again.');
+      }
+      
       const queryParams = new URLSearchParams({
         page: page.toString(),
         limit: limit.toString(),
@@ -235,11 +240,25 @@ const adminApi = {
 
   createProduct: async (productData) => {
     try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        throw new Error('Admin authentication required. Please login again.');
+      }
+      
+      console.log('Sending product data to API:', productData);
+      console.log('Using token:', token.substring(0, 20) + '...');
+      
       const response = await api.post('/products/create', productData);
+      console.log('API response:', response);
       return response.data;
     } catch (error) {
       console.error('Create product error:', error);
-      throw new Error('Failed to create product');
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        throw new Error(error.response.data.message || 'Failed to create product');
+      } else {
+        throw new Error('Network error or server unavailable');
+      }
     }
   },
 
