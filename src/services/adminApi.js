@@ -1,6 +1,6 @@
 // Simple API client for admin panel
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://backend-ecommerce-admin.onrender.com/api';
-// const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+import { API_URL } from '../config.js';
+const API_BASE_URL = API_URL;
 
 const api = {
   get: async (url) => {

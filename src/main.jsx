@@ -8,7 +8,7 @@ import App from './App.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter scrollRestoration="manual">
+    <BrowserRouter basename={import.meta.env.PROD ? '/' : '/'} scrollRestoration="manual">
       <App />
       <ToastContainer position="bottom-right" autoClose={3000} />
     </BrowserRouter>

@@ -7,10 +7,11 @@ const AdminLayout = ({ children }) => {
 
   useEffect(() => {
     // Check if user is admin
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const token = localStorage.getItem('adminToken');
+    const user = localStorage.getItem('adminUser');
     
     if (!token || !user) {
+      console.log('AdminLayout: No auth data found, redirecting to login');
       navigate('/admin/login');
       return;
     }
@@ -18,12 +19,14 @@ const AdminLayout = ({ children }) => {
     try {
       const userData = JSON.parse(user);
       if (userData.role !== 'admin') {
+        console.log('AdminLayout: Role mismatch, redirecting to login');
         navigate('/admin/login');
         return;
       }
     } catch (error) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      console.log('AdminLayout: Error parsing user data, clearing storage');
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
       navigate('/admin/login');
     }
   }, [navigate]);

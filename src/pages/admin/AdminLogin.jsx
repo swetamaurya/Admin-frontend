@@ -46,8 +46,14 @@ const AdminLogin = () => {
       if (data.success) {
         toast.success('Welcome back, Admin!');
         
-        // Redirect to admin dashboard
-        navigate('/admin/dashboard');
+        // Debug: Check localStorage
+        console.log('Admin token stored:', localStorage.getItem('adminToken'));
+        console.log('Admin user stored:', localStorage.getItem('adminUser'));
+        
+        // Small delay to ensure localStorage is set
+        setTimeout(() => {
+          navigate('/admin/dashboard');
+        }, 100);
       } else {
         console.error('Login failed:', data);
         toast.error(data.message || 'Login failed');

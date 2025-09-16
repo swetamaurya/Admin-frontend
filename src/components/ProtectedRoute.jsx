@@ -14,21 +14,30 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     // Check if user is authenticated and has the required role
     const checkAuth = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('adminToken');
+        const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        
+        console.log('ProtectedRoute Debug:', {
+          token: token ? 'Present' : 'Missing',
+          userData,
+          requiredRole,
+          hasRole: userData.role === requiredRole
+        });
+        
         if (!token) {
+          console.log('No token found, redirecting to login');
           setAuthorized(false);
           setLoading(false);
           return;
         }
 
-        // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('user') || '{}');
-        
         // Check if user has the required role
         if (requiredRole && userData.role !== requiredRole) {
+          console.log('Role mismatch:', userData.role, 'vs', requiredRole);
           toast.error(`Access denied. ${requiredRole} privileges required.`);
           setAuthorized(false);
         } else {
+          console.log('Authentication successful');
           setAuthorized(true);
         }
       } catch (error) {

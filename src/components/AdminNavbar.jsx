@@ -13,15 +13,22 @@ const AdminNavbar = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem('adminUser');
     if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
-      
-      // Check if user is admin
-      if (userData.role !== 'admin') {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        
+        // Check if user is admin
+        if (userData.role !== 'admin') {
+          console.log('AdminNavbar: Role mismatch, redirecting to login');
+          navigate('/admin/login');
+          return;
+        }
+      } catch (error) {
+        console.log('AdminNavbar: Error parsing user data');
         navigate('/admin/login');
-        return;
       }
     } else {
+      console.log('AdminNavbar: No user data found');
       navigate('/admin/login');
     }
   }, [navigate]);
