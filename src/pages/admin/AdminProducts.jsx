@@ -57,12 +57,11 @@ const AdminProducts = () => {
   });
 
   useEffect(() => {
-    // Debug: Check authentication status
-    const token = localStorage.getItem('adminToken');
-    const user = localStorage.getItem('adminUser');
-    console.log('=== ADMIN PRODUCTS PAGE DEBUG ===');
-    console.log('Admin token:', token ? token.substring(0, 20) + '...' : 'No token');
-    console.log('Admin user:', user);
+    // Test image URL construction
+    console.log('=== IMAGE TEST ON PAGE LOAD ===');
+    const testUrl = '/uploads/product_1758048086776.png';
+    console.log('Test URL:', testUrl);
+    console.log('Constructed URL:', getImageUrl(testUrl));
     
     fetchProducts();
   }, [currentPage, searchTerm]);
@@ -82,6 +81,22 @@ const AdminProducts = () => {
     try {
       setLoading(true);
       const response = await adminApi.getProducts(currentPage, 5, searchTerm);
+      
+      // Debug: Check first product images
+      if (response.data && response.data.length > 0) {
+        console.log('=== PRODUCT IMAGES DEBUG ===');
+        const firstProduct = response.data[0];
+        console.log('First product:', firstProduct.name);
+        console.log('Images:', firstProduct.images);
+        
+        if (firstProduct.images && firstProduct.images.length > 0) {
+          firstProduct.images.forEach((img, index) => {
+            console.log(`Image ${index + 1}:`, img.url);
+            console.log(`Constructed URL ${index + 1}:`, getImageUrl(img.url));
+          });
+        }
+      }
+      
       setProducts(response.data || []);
       setPagination(response.pagination || {});
       setTotalPages(response.pagination?.totalPages || 1);
@@ -366,11 +381,15 @@ const AdminProducts = () => {
         
         try {
           const response = await adminApi.uploadImage(imageData, file.name);
+          console.log('Image upload response:', response);
+          
           const newImage = {
             url: response.data.url,
             alt: product.name || 'Product image',
             isPrimary: product.images.length === 0
           };
+          
+          console.log('New image object:', newImage);
           
           // Update state based on which product we're working with
           if (product === newProduct) {

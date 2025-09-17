@@ -1,1 +1,12 @@
-/*    /index.html   200
+# Admin routes - preserve routing
+/admin/*    /index.html   200
+/admin/login    /index.html   200
+/admin/dashboard    /index.html   200
+/admin/products    /index.html   200
+/admin/orders    /index.html   200
+/admin/users    /index.html   200
+/admin/payments    /index.html   200
+/admin/inventory    /index.html   200
+
+# Catch all - redirect to admin login for root
+/*    /admin/login   302
