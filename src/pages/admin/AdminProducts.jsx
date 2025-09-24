@@ -9,10 +9,10 @@ const CATEGORY_OPTIONS = [
   'Bath Mats', 
   'Bedside Runners',
   'Cotton Yoga Mats',
-  'Mats Collection',
+  'Aasan Mats',
   'In Door Mats',
   'Out Door Mats',
-  'Other'
+  
 ];
 
 const AdminProducts = () => {
@@ -42,8 +42,7 @@ const AdminProducts = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
-    category: 'Other', // Default category
-    brand: 'Royal Thread',
+    category: '', // Default category
     meterial: '',
     price: '',
     mrp: '',
@@ -182,8 +181,7 @@ const AdminProducts = () => {
         setNewProduct({
           name: '',
           description: '',
-          category: 'Other', // Reset to default
-          brand: 'Royal Thread',
+          category: '', // Reset to default
           meterial: '',
           price: '',
           mrp: '',
@@ -564,7 +562,7 @@ const AdminProducts = () => {
           <input
             ref={searchInputRef}
             type="text"
-            placeholder="Search products by name, category, brand, SKU..."
+            placeholder="Search products by name, category, SKU..."
             value={localSearchTerm}
             onChange={handleSearch}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
@@ -635,9 +633,7 @@ const AdminProducts = () => {
                         <div className="text-sm font-medium text-gray-900">
                           {product.name}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {product.brand}
-                        </div>
+                        
                       </div>
                     </div>
                   </td>
@@ -970,15 +966,7 @@ const AdminProducts = () => {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Brand</label>
-                  <input
-                    type="text"
-                    value={newProduct.brand}
-                    onChange={(e) => setNewProduct({...newProduct, brand: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+           
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Material *</label>
                   <input
@@ -1370,7 +1358,7 @@ const AdminProducts = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Category *</label>
                   <select
-                    value={editingProduct.category || 'Other'}
+                    value={editingProduct.category}
                     onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
@@ -1380,15 +1368,7 @@ const AdminProducts = () => {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Brand</label>
-                  <input
-                    type="text"
-                    value={editingProduct.brand || ''}
-                    onChange={(e) => setEditingProduct({...editingProduct, brand: e.target.value})}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Material *</label>
                   <input

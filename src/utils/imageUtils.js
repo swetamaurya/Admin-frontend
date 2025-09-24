@@ -1,28 +1,42 @@
-import { BASE_URL } from '../config';
 
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 // Utility function to get full image URL
 export const getImageUrl = (url) => {
   if (!url) return '';
   
   // If it's already a full URL, return as is
-  if (url.startsWith('http')) return url;
+  if (url.startsWith('http')) {
+    console.log(`Image URL (already full): ${url}`);
+    return url;
+  }
+  
+  // Clean BASE_URL to ensure no trailing slash
+  const cleanBaseUrl = BASE_URL.replace(/\/$/, '');
   
   // If it starts with /uploads, prepend BASE_URL
   if (url.startsWith('/uploads')) {
-    const fullUrl = `${BASE_URL}${url}`;
+    const fullUrl = `${cleanBaseUrl}${url}`;
     console.log(`Image URL: ${url} -> ${fullUrl}`);
     return fullUrl;
   }
   
-  // If it doesn't start with /, add it
+  // If it starts with uploads/, prepend BASE_URL with /
+  if (url.startsWith('uploads/')) {
+    const fullUrl = `${cleanBaseUrl}/${url}`;
+    console.log(`Image URL: ${url} -> ${fullUrl}`);
+    return fullUrl;
+  }
+  
+  // If it doesn't start with /, add /uploads/
   if (!url.startsWith('/')) {
-    const fullUrl = `${BASE_URL}/uploads/${url}`;
+    const fullUrl = `${cleanBaseUrl}/uploads/${url}`;
     console.log(`Image URL: ${url} -> ${fullUrl}`);
     return fullUrl;
   }
   
-  // Default case
-  const fullUrl = `${BASE_URL}${url}`;
+  // Default case - prepend BASE_URL
+  const fullUrl = `${cleanBaseUrl}${url}`;
   console.log(`Image URL: ${url} -> ${fullUrl}`);
   return fullUrl;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaBoxOpen, FaShoppingCart, FaUsers, FaDollarSign, FaChartLine, FaEye, FaArrowRight } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -15,30 +15,29 @@ const AdminDashboard = () => {
     topProducts: []
   });
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    fetchDashboardData();
+    // Prevent duplicate API calls
+    if (!hasFetched.current) {
+      hasFetched.current = true;
+      fetchDashboardData();
+    }
   }, []);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      // Fetch real data from APIs
-      const [productsRes, usersRes, ordersRes] = await Promise.all([
-        adminApi.getProducts(),
-        adminApi.getUsers(),
-        adminApi.getOrders(1, 10)
-      ]);
-
-      const totalRevenue = ordersRes.data?.reduce((sum, order) => sum + order.totalAmount, 0) || 0;
+      // Fetch dashboard statistics from dedicated API
+      const dashboardData = await adminApi.getDashboardStats();
 
       setStats({
-        totalProducts: productsRes.data?.length || 0,
-        totalOrders: ordersRes.pagination?.totalOrders || 0,
-        totalUsers: usersRes.data?.length || 0,
-        totalRevenue: totalRevenue,
-        recentOrders: ordersRes.data?.slice(0, 5) || [],
-        topProducts: productsRes.data?.slice(0, 5) || []
+        totalProducts: dashboardData.data?.totalProducts || 0,
+        totalOrders: dashboardData.data?.totalOrders || 0,
+        totalUsers: dashboardData.data?.totalUsers || 0,
+        totalRevenue: dashboardData.data?.totalRevenue || 0,
+        recentOrders: dashboardData.data?.recentOrders || [],
+        topProducts: dashboardData.data?.topProducts || []
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

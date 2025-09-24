@@ -1,6 +1,6 @@
 // Simple API client for admin panel
-import { API_URL } from '../config.js';
-const API_BASE_URL = API_URL;
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const api = {
   get: async (url) => {
@@ -289,6 +289,17 @@ const adminApi = {
               return response.data;
             } catch (error) {
               console.error('Get admin stats error:', error);
+              throw error;
+            }
+          },
+
+          // Dashboard statistics (counts only)
+          getDashboardStats: async () => {
+            try {
+              const response = await api.get('/dashboard');
+              return response.data;
+            } catch (error) {
+              console.error('Get dashboard stats error:', error);
               throw error;
             }
           },
