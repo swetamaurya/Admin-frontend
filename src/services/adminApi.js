@@ -1,6 +1,13 @@
 // Simple API client for admin panel
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Debug logging for API configuration
+console.log('API Configuration:', {
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  API_BASE_URL: API_BASE_URL,
+  NODE_ENV: import.meta.env.NODE_ENV
+});
 
 const api = {
   get: async (url) => {
