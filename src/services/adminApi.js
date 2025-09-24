@@ -1,13 +1,38 @@
 // Simple API client for admin panel
 
-const API_BASE_URL = import.meta.env.VITE_API_URL
+// Environment-based API URL configuration
+const getApiBaseUrl = () => {
+  // Check if we're in production
+  const isProduction = import.meta.env.PROD;
+  
+  if (isProduction) {
+    // Production URLs - Use hosted backend URL
+    return import.meta.env.VITE_API_URL || 'https://backend-ecommerce-admin.onrender.com/api';
+  } else {
+    // Development URLs
+    return import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+  }
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Debug logging for API configuration
-console.log('API Configuration:', {
-  VITE_API_URL: import.meta.env.VITE_API_URL,
-  API_BASE_URL: API_BASE_URL,
+console.log('=== API CONFIGURATION DEBUG ===');
+console.log('Environment:', {
+  PROD: import.meta.env.PROD,
+  DEV: import.meta.env.DEV,
+  MODE: import.meta.env.MODE,
   NODE_ENV: import.meta.env.NODE_ENV
 });
+console.log('Environment Variables:', {
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL
+});
+console.log('Final API Configuration:', {
+  API_BASE_URL: API_BASE_URL,
+  IsProduction: import.meta.env.PROD
+});
+console.log('=== END API CONFIGURATION ===');
 
 const api = {
   get: async (url) => {
