@@ -1,6 +1,6 @@
 
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend-ecommerce-admin.onrender.com';
 // Utility function to get full image URL
 export const getImageUrl = (url) => {
   if (!url) return '';
