@@ -13,57 +13,18 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Check if user is already logged in
+  // Check if user is already logged in - TEMPORARILY DISABLED FOR DEBUGGING
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Small delay to prevent rapid redirects
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        const token = localStorage.getItem('adminToken');
-        const userDataStr = localStorage.getItem('adminUser');
-        
-        console.log('Login Check - Token:', token ? 'Present' : 'Missing');
-        console.log('Login Check - UserData:', userDataStr);
-        
-        // Clear any corrupted data first
-        if (!token || !userDataStr) {
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminUser');
-          console.log('Cleared corrupted auth data');
-          return;
-        }
-        
-        let userData;
-        try {
-          userData = JSON.parse(userDataStr);
-        } catch (parseError) {
-          console.error('Error parsing user data:', parseError);
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminUser');
-          return;
-        }
-        
-        // Only redirect if we have valid data
-        if (token && userData && userData.role === 'admin' && userData.email) {
-          console.log('User already logged in, redirecting to dashboard');
-          navigate('/admin/dashboard', { replace: true });
-        } else {
-          console.log('No valid authentication found, staying on login page');
-          // Clear invalid data
-          localStorage.removeItem('adminToken');
-          localStorage.removeItem('adminUser');
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-        // Clear any corrupted data
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminUser');
-      }
-    };
+    console.log('AdminLogin useEffect running - checking auth...');
     
-    checkAuth();
-  }, [navigate]);
+    // Clear all auth data first to prevent loops
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    console.log('Cleared all auth data for debugging');
+    
+    // Don't redirect, just stay on login page
+    console.log('Staying on login page for debugging');
+  }, []);
 
   // Debug log to check if component is rendering
   console.log('AdminLogin component rendered');
