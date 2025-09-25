@@ -79,12 +79,6 @@ const AdminLogin = () => {
     }
   };
 
-  const clearAllData = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    toast.success('All data cleared! Please try logging in again.');
-    console.log('All authentication data cleared');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
@@ -193,16 +187,6 @@ const AdminLogin = () => {
               </button>
             </div>
 
-            {/* Clear Data Button - For debugging */}
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={clearAllData}
-                className="text-xs text-red-600 hover:text-red-800 transition-colors duration-200 underline"
-              >
-                Clear All Data (Debug)
-              </button>
-            </div>
           </form>
 
           {/* Footer */}
