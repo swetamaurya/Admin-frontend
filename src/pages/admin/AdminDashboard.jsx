@@ -207,28 +207,32 @@ const AdminDashboard = () => {
                       e.stopPropagation(); // Prevent parent click
                       navigate(`/admin/products/${product._id}`);
                     }}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between space-y-1 sm:space-y-0 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+                    className="flex items-start space-x-2 p-2 rounded hover:bg-gray-50 cursor-pointer transition-colors duration-200"
                   >
-                    <div className="flex items-center space-x-2 sm:space-x-3">
-                      <span className="text-xs sm:text-sm font-medium text-gray-500">
-                        #{index + 1}
-                      </span>
-                      <div>
-                        <p className="text-xs sm:text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200 truncate">
-                          {product.name}
-                        </p>
-                        <p className="text-xs sm:text-sm text-gray-500">
+                    <span className="text-xs font-medium text-gray-500 flex-shrink-0 mt-0.5">
+                      #{index + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200 leading-tight overflow-hidden" style={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical'
+                      }}>
+                        {product.name}
+                      </p>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className="text-xs text-gray-500">
                           {product.category}
                         </p>
+                        <div className="flex items-center space-x-2 text-xs">
+                          <span className="font-medium text-gray-900">
+                            ₹{product.price}
+                          </span>
+                          <span className="text-gray-500">
+                            Stock: {product.stock}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center justify-between sm:flex-col sm:text-right sm:space-y-1">
-                      <p className="text-xs sm:text-sm font-medium text-gray-900">
-                        ₹{product.price}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Stock: {product.stock}
-                      </p>
                     </div>
                   </div>
                 ))}
