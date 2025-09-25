@@ -16,18 +16,49 @@ const AdminLogin = () => {
   // Check if user is already logged in
   useEffect(() => {
     const checkAuth = async () => {
-      // Small delay to prevent rapid redirects
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      const token = localStorage.getItem('adminToken');
-      const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
-      
-      // Only redirect if we have both token and valid user data
-      if (token && userData && userData.role === 'admin' && userData.email) {
-        console.log('User already logged in, redirecting to dashboard');
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        console.log('No valid authentication found, staying on login page');
+      try {
+        // Small delay to prevent rapid redirects
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        const token = localStorage.getItem('adminToken');
+        const userDataStr = localStorage.getItem('adminUser');
+        
+        console.log('Login Check - Token:', token ? 'Present' : 'Missing');
+        console.log('Login Check - UserData:', userDataStr);
+        
+        // Clear any corrupted data first
+        if (!token || !userDataStr) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          console.log('Cleared corrupted auth data');
+          return;
+        }
+        
+        let userData;
+        try {
+          userData = JSON.parse(userDataStr);
+        } catch (parseError) {
+          console.error('Error parsing user data:', parseError);
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          return;
+        }
+        
+        // Only redirect if we have valid data
+        if (token && userData && userData.role === 'admin' && userData.email) {
+          console.log('User already logged in, redirecting to dashboard');
+          navigate('/admin/dashboard', { replace: true });
+        } else {
+          console.log('No valid authentication found, staying on login page');
+          // Clear invalid data
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        // Clear any corrupted data
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
       }
     };
     
@@ -87,6 +118,12 @@ const AdminLogin = () => {
     }
   };
 
+  const clearAllData = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    toast.success('All data cleared! Please try logging in again.');
+    console.log('All authentication data cleared');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
@@ -192,6 +229,17 @@ const AdminLogin = () => {
                 className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
               >
                 Forgot your password?
+              </button>
+            </div>
+
+            {/* Clear Data Button - For debugging */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={clearAllData}
+                className="text-xs text-red-600 hover:text-red-800 transition-colors duration-200 underline"
+              >
+                Clear All Data (Debug)
               </button>
             </div>
           </form>

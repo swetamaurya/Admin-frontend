@@ -15,21 +15,44 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     const checkAuth = async () => {
       try {
         // Small delay to prevent rapid redirects
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 200));
         
         const token = localStorage.getItem('adminToken');
-        const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+        const userDataStr = localStorage.getItem('adminUser');
         
         console.log('ProtectedRoute Debug:', {
           token: token ? 'Present' : 'Missing',
-          userData,
+          userDataStr: userDataStr ? 'Present' : 'Missing',
           requiredRole,
-          hasRole: userData.role === requiredRole,
           currentPath: window.location.pathname
         });
         
-        if (!token || !userData || !userData.email) {
+        // Clear corrupted data
+        if (!token || !userDataStr) {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
           console.log('No valid authentication found, redirecting to login');
+          setAuthorized(false);
+          setLoading(false);
+          return;
+        }
+        
+        let userData;
+        try {
+          userData = JSON.parse(userDataStr);
+        } catch (parseError) {
+          console.error('Error parsing user data:', parseError);
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          setAuthorized(false);
+          setLoading(false);
+          return;
+        }
+        
+        if (!userData || !userData.email || !userData.role) {
+          console.log('Invalid user data structure');
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
           setAuthorized(false);
           setLoading(false);
           return;
@@ -46,6 +69,9 @@ const ProtectedRoute = ({ element, requiredRole }) => {
         }
       } catch (error) {
         console.error('Authentication error:', error);
+        // Clear any corrupted data
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
         setAuthorized(false);
       } finally {
         setLoading(false);
