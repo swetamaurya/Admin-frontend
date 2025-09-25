@@ -106,7 +106,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+      <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {statCards.map((stat, index) => {
           const Icon = stat.icon;
           return (
@@ -124,7 +124,7 @@ const AdminDashboard = () => {
               
               <div className="space-y-1 sm:space-y-2">
                 <p className="text-xs sm:text-sm font-medium text-gray-600 leading-tight">{stat.title}</p>
-                <p className={`text-lg sm:text-xl md:text-2xl font-bold ${stat.textColor}`}>
+                <p className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold ${stat.textColor}`}>
                   {stat.value}
                 </p>
                 <p className="text-xs text-gray-500 hidden sm:block">
@@ -137,7 +137,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Orders and Top Products */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
         {/* Recent Orders */}
         <div 
           onClick={() => navigate('/admin/orders')}
