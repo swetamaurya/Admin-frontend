@@ -14,6 +14,9 @@ const ProtectedRoute = ({ element, requiredRole }) => {
     // Check if user is authenticated and has the required role
     const checkAuth = async () => {
       try {
+        // Small delay to prevent rapid redirects
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const token = localStorage.getItem('adminToken');
         const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
         
@@ -25,8 +28,8 @@ const ProtectedRoute = ({ element, requiredRole }) => {
           currentPath: window.location.pathname
         });
         
-        if (!token) {
-          console.log('No token found, redirecting to login');
+        if (!token || !userData || !userData.email) {
+          console.log('No valid authentication found, redirecting to login');
           setAuthorized(false);
           setLoading(false);
           return;

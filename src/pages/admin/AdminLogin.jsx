@@ -15,13 +15,23 @@ const AdminLogin = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+    const checkAuth = async () => {
+      // Small delay to prevent rapid redirects
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const token = localStorage.getItem('adminToken');
+      const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+      
+      // Only redirect if we have both token and valid user data
+      if (token && userData && userData.role === 'admin' && userData.email) {
+        console.log('User already logged in, redirecting to dashboard');
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        console.log('No valid authentication found, staying on login page');
+      }
+    };
     
-    if (token && userData.role === 'admin') {
-      console.log('User already logged in, redirecting to dashboard');
-      navigate('/admin/dashboard', { replace: true });
-    }
+    checkAuth();
   }, [navigate]);
 
   // Debug log to check if component is rendering
