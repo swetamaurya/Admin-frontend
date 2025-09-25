@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaShieldAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -12,6 +12,17 @@ const AdminLogin = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    const userData = JSON.parse(localStorage.getItem('adminUser') || '{}');
+    
+    if (token && userData.role === 'admin') {
+      console.log('User already logged in, redirecting to dashboard');
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [navigate]);
 
   // Debug log to check if component is rendering
   console.log('AdminLogin component rendered');

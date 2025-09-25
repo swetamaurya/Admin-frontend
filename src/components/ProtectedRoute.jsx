@@ -21,7 +21,8 @@ const ProtectedRoute = ({ element, requiredRole }) => {
           token: token ? 'Present' : 'Missing',
           userData,
           requiredRole,
-          hasRole: userData.role === requiredRole
+          hasRole: userData.role === requiredRole,
+          currentPath: window.location.pathname
         });
         
         if (!token) {

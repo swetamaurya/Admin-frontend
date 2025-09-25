@@ -26,21 +26,23 @@ export default function App() {
   return (
     <>
       <Routes>
-        {/* Redirect root to admin login */}
-        <Route path="/" element={<AdminLogin />} />
+        {/* Redirect root to admin dashboard */}
+        <Route path="/" element={<ProtectedRoute element={<AdminLayout><AdminDashboard /></AdminLayout>} requiredRole="admin" />} />
         
-        {/* Admin routes */}
+        {/* Admin auth routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
         <Route path="/admin/verify-otp" element={<AdminOtpVerification />} />
+        
+        {/* Protected admin routes */}
         <Route path="/admin" element={<ProtectedRoute element={<AdminPage />} requiredRole="admin" />} />
-        <Route path="/admin/dashboard" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
-        <Route path="/admin/products" element={<AdminLayout><AdminProducts /></AdminLayout>} />
-        <Route path="/admin/orders" element={<AdminLayout><AdminOrdersPage /></AdminLayout>} />
-        <Route path="/admin/analytics" element={<AdminLayout><div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p className="text-gray-600">Coming soon...</p></div></AdminLayout>} />
-        <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
-        <Route path="/admin/payments" element={<AdminLayout><AdminPayments /></AdminLayout>} />
-        <Route path="/admin/inventory" element={<AdminLayout><div className="p-6"><h1 className="text-2xl font-bold">Inventory</h1><p className="text-gray-600">Coming soon...</p></div></AdminLayout>} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute element={<AdminLayout><AdminDashboard /></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/products" element={<ProtectedRoute element={<AdminLayout><AdminProducts /></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/orders" element={<ProtectedRoute element={<AdminLayout><AdminOrdersPage /></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/analytics" element={<ProtectedRoute element={<AdminLayout><div className="p-6"><h1 className="text-2xl font-bold">Analytics</h1><p className="text-gray-600">Coming soon...</p></div></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/users" element={<ProtectedRoute element={<AdminLayout><AdminUsers /></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/payments" element={<ProtectedRoute element={<AdminLayout><AdminPayments /></AdminLayout>} requiredRole="admin" />} />
+        <Route path="/admin/inventory" element={<ProtectedRoute element={<AdminLayout><div className="p-6"><h1 className="text-2xl font-bold">Inventory</h1><p className="text-gray-600">Coming soon...</p></div></AdminLayout>} requiredRole="admin" />} />
         
         {/* 404 page */}
         <Route path="/404" element={<NotFoundPage />} />
