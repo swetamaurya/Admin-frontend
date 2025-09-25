@@ -1,44 +1,20 @@
 
 
-const BASE_URL = import.meta.env.VITE_BACKEND_URL || 'https://backend-ecommerce-admin.onrender.com';
 // Utility function to get full image URL
 export const getImageUrl = (url) => {
   if (!url) return '';
   
-  // If it's already a full URL, return as is
+  // If it's already a full URL (Cloudinary or any other), return as is
   if (url.startsWith('http')) {
-    console.log(`Image URL (already full): ${url}`);
+    console.log(`Image URL (Cloudinary/full URL): ${url}`);
     return url;
   }
   
-  // Clean BASE_URL to ensure no trailing slash
-  const cleanBaseUrl = BASE_URL.replace(/\/$/, '');
+  // For any non-HTTP URLs, log a warning since we're now using Cloudinary
+  console.warn(`Non-HTTP image URL detected: ${url}. This should be a Cloudinary URL.`);
   
-  // If it starts with /uploads, prepend BASE_URL
-  if (url.startsWith('/uploads')) {
-    const fullUrl = `${cleanBaseUrl}${url}`;
-    console.log(`Image URL: ${url} -> ${fullUrl}`);
-    return fullUrl;
-  }
-  
-  // If it starts with uploads/, prepend BASE_URL with /
-  if (url.startsWith('uploads/')) {
-    const fullUrl = `${cleanBaseUrl}/${url}`;
-    console.log(`Image URL: ${url} -> ${fullUrl}`);
-    return fullUrl;
-  }
-  
-  // If it doesn't start with /, add /uploads/
-  if (!url.startsWith('/')) {
-    const fullUrl = `${cleanBaseUrl}/uploads/${url}`;
-    console.log(`Image URL: ${url} -> ${fullUrl}`);
-    return fullUrl;
-  }
-  
-  // Default case - prepend BASE_URL
-  const fullUrl = `${cleanBaseUrl}${url}`;
-  console.log(`Image URL: ${url} -> ${fullUrl}`);
-  return fullUrl;
+  // Return the URL as-is (shouldn't happen with Cloudinary)
+  return url;
 };
 
 // Utility function to get image URL for main site
@@ -54,12 +30,12 @@ export const getAdminImageUrl = (url) => {
 // Utility function to validate image URL
 export const isValidImageUrl = (url) => {
   if (!url) return false;
-  const fullUrl = getImageUrl(url);
-  return fullUrl.startsWith('http');
+  // Cloudinary URLs should always start with https://res.cloudinary.com
+  return url.startsWith('https://res.cloudinary.com') || url.startsWith('http');
 };
 
 // Utility function to get image URL with fallback
-export const getImageUrlWithFallback = (url, fallbackUrl = '/images/placeholder.jpg') => {
+export const getImageUrlWithFallback = (url, fallbackUrl = 'https://via.placeholder.com/300x300?text=No+Image') => {
   const imageUrl = getImageUrl(url);
   return imageUrl || fallbackUrl;
 };

@@ -56,12 +56,6 @@ const AdminProducts = () => {
   });
 
   useEffect(() => {
-    // Test image URL construction
-    console.log('=== IMAGE TEST ON PAGE LOAD ===');
-    const testUrl = '/uploads/product_1758048086776.png';
-    console.log('Test URL:', testUrl);
-    console.log('Constructed URL:', getImageUrl(testUrl));
-    
     fetchProducts();
   }, [currentPage, searchTerm]);
 
