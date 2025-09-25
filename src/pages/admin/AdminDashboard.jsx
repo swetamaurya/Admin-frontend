@@ -161,7 +161,7 @@ const AdminDashboard = () => {
                   >
                     <div>
                       <p className="text-xs sm:text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200">
-                        Order #{order.orderNumber}
+                        Order #{order.orderId}
                       </p>
                       <p className="text-xs sm:text-sm text-gray-500">
                         {new Date(order.createdAt).toLocaleDateString()}

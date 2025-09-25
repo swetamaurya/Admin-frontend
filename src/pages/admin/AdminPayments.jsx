@@ -255,7 +255,7 @@ const AdminPayments = () => {
                           {payment.paymentId}
                         </div>
                         <div className="text-sm text-gray-500">
-                          Order: {payment.order?.orderNumber || 'N/A'}
+                          Order: {payment.order?.orderId || 'N/A'}
                         </div>
                       </div>
                     </div>
@@ -326,7 +326,7 @@ const AdminPayments = () => {
                       {payment.paymentId}
                     </h3>
                     <p className="text-xs text-gray-600">
-                      Order: {payment.order?.orderNumber || 'N/A'} • ₹{payment.amount?.toFixed(2) || '0.00'}
+                      Order: {payment.order?.orderId || 'N/A'} • ₹{payment.amount?.toFixed(2) || '0.00'}
                     </p>
                   </div>
                 </div>
