@@ -12,7 +12,7 @@ const CATEGORY_OPTIONS = [
   'Aasan Mats',
   'In Door Mats',
   'Out Door Mats',
-  
+   
 ];
 
 const AdminProducts = () => {
@@ -42,7 +42,7 @@ const AdminProducts = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
-    category: '', // Default category
+    category: '', // Default category matching backend
     meterial: '',
     price: '',
     mrp: '',
@@ -106,30 +106,50 @@ const AdminProducts = () => {
     
     console.log('=== PRODUCT CREATION DEBUG ===');
     console.log('Form data:', newProduct);
+    console.log('Category value:', newProduct.category);
+    console.log('Category type:', typeof newProduct.category);
+    console.log('Category length:', newProduct.category?.length);
     
-    // Frontend validation
+    // Frontend validation - Check each field individually
+    const validationErrors = [];
+    
     if (!newProduct.name.trim()) {
-      toast.error('Product name is required');
-      return;
+      validationErrors.push('Product Name');
     }
     if (!newProduct.description.trim()) {
-      toast.error('Product description is required');
-      return;
+      validationErrors.push('Description');
+    }
+    if (!newProduct.category || !newProduct.category.trim()) {
+      validationErrors.push('Category');
     }
     if (!newProduct.meterial.trim()) {
-      toast.error('Product material is required');
-      return;
+      validationErrors.push('Material');
     }
     if (!newProduct.price || newProduct.price <= 0) {
-      toast.error('Valid price is required');
-      return;
+      validationErrors.push('Price');
+    }
+    if (!newProduct.mrp || newProduct.mrp <= 0) {
+      validationErrors.push('MRP');
     }
     if (!newProduct.stock || newProduct.stock <= 0) {
-      toast.error('Valid stock quantity is required');
-      return;
+      validationErrors.push('Stock');
     }
     if (!newProduct.images || newProduct.images.length === 0) {
-      toast.error('At least one product image is required');
+      validationErrors.push('Product Images');
+    }
+    if (!newProduct.specialFeature.trim()) {
+      validationErrors.push('Special Features');
+    }
+    if (!newProduct.colors || newProduct.colors.length === 0) {
+      validationErrors.push('Colors');
+    }
+    if (!newProduct.sizes || newProduct.sizes.length === 0) {
+      validationErrors.push('Sizes');
+    }
+    
+    // Show specific error for each missing field
+    if (validationErrors.length > 0) {
+      toast.error(`Please fill in: ${validationErrors.join(', ')}`);
       return;
     }
     
@@ -175,7 +195,7 @@ const AdminProducts = () => {
         setNewProduct({
           name: '',
           description: '',
-          category: '', // Reset to default
+          category: '', // Reset to default matching backend
           meterial: '',
           price: '',
           mrp: '',
@@ -194,7 +214,26 @@ const AdminProducts = () => {
         setLocalSearchTerm(''); // Clear local search
         await fetchProducts();
       } else {
-        toast.error('Error creating product: ' + (response.message || 'Unknown error'));
+        // Show specific error message
+        let errorMessage = response.message || 'Unknown error';
+        
+        // If response has missingFields array, show specific fields
+        if (response.missingFields && Array.isArray(response.missingFields)) {
+          const fieldNames = {
+            name: 'Product Name',
+            description: 'Description', 
+            category: 'Category',
+            meterial: 'Material',
+            price: 'Price',
+            stock: 'Stock'
+          };
+          
+          const missingFieldNames = response.missingFields.map(field => fieldNames[field] || field);
+          errorMessage = `Please fill in: ${missingFieldNames.join(', ')}`;
+        }
+        
+        toast.error(errorMessage);
+        console.error('Product creation failed:', response);
       }
     } catch (error) {
       console.error('Error adding product:', error);
@@ -205,29 +244,47 @@ const AdminProducts = () => {
   const handleEditProduct = async (e) => {
     e.preventDefault();
     
-    // Frontend validation
+    // Frontend validation - Check each field individually
+    const validationErrors = [];
+    
     if (!editingProduct.name.trim()) {
-      toast.error('Product name is required');
-      return;
+      validationErrors.push('Product Name');
     }
     if (!editingProduct.description.trim()) {
-      toast.error('Product description is required');
-      return;
+      validationErrors.push('Description');
+    }
+    if (!editingProduct.category || !editingProduct.category.trim()) {
+      validationErrors.push('Category');
     }
     if (!editingProduct.meterial.trim()) {
-      toast.error('Product material is required');
-      return;
+      validationErrors.push('Material');
     }
     if (!editingProduct.price || editingProduct.price <= 0) {
-      toast.error('Valid price is required');
-      return;
+      validationErrors.push('Price');
+    }
+    if (!editingProduct.mrp || editingProduct.mrp <= 0) {
+      validationErrors.push('MRP');
     }
     if (!editingProduct.stock || editingProduct.stock <= 0) {
-      toast.error('Valid stock quantity is required');
-      return;
+      validationErrors.push('Stock');
     }
     if (!editingProduct.images || editingProduct.images.length === 0) {
-      toast.error('At least one product image is required');
+      validationErrors.push('Product Images');
+    }
+    if (!editingProduct.specialFeature.trim()) {
+      validationErrors.push('Special Features');
+    }
+    if (!editingProduct.colors || editingProduct.colors.length === 0) {
+      validationErrors.push('Colors');
+    }
+    if (!editingProduct.sizes || editingProduct.sizes.length === 0) {
+      validationErrors.push('Sizes');
+    }
+    
+    
+    // Show specific error for each missing field
+    if (validationErrors.length > 0) {
+      toast.error(`Please fill in: ${validationErrors.join(', ')}`);
       return;
     }
     
@@ -280,7 +337,26 @@ const AdminProducts = () => {
         setLocalSearchTerm(''); // Clear local search
         await fetchProducts();
       } else {
-        toast.error('Error updating product: ' + (response.message || 'Unknown error'));
+        // Show specific error message
+        let errorMessage = response.message || 'Unknown error';
+        
+        // If response has missingFields array, show specific fields
+        if (response.missingFields && Array.isArray(response.missingFields)) {
+          const fieldNames = {
+            name: 'Product Name',
+            description: 'Description', 
+            category: 'Category',
+            meterial: 'Material',
+            price: 'Price',
+            stock: 'Stock'
+          };
+          
+          const missingFieldNames = response.missingFields.map(field => fieldNames[field] || field);
+          errorMessage = `Please fill in: ${missingFieldNames.join(', ')}`;
+        }
+        
+        toast.error(errorMessage);
+        console.error('Product update failed:', response);
       }
     } catch (error) {
       console.error('Error updating product:', error);
@@ -944,7 +1020,6 @@ const AdminProducts = () => {
                     value={newProduct.name}
                     onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
                 <div>
@@ -953,8 +1028,8 @@ const AdminProducts = () => {
                     value={newProduct.category}
                     onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   >
+                    <option value="">Select Category</option>
                     {CATEGORY_OPTIONS.map(category => (
                       <option key={category} value={category}>{category}</option>
                     ))}
@@ -968,7 +1043,6 @@ const AdminProducts = () => {
                     value={newProduct.meterial}
                     onChange={(e) => setNewProduct({...newProduct, meterial: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
               </div>
@@ -980,7 +1054,6 @@ const AdminProducts = () => {
                   onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
                   rows={3}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
                 />
               </div>
 
@@ -994,7 +1067,6 @@ const AdminProducts = () => {
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
                 <div>
@@ -1014,7 +1086,6 @@ const AdminProducts = () => {
                     value={newProduct.stock}
                     onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
               </div>
@@ -1043,16 +1114,11 @@ const AdminProducts = () => {
                           <img 
                             src={getImageUrl(image.url)} 
                             alt={image.alt} 
-                            className="w-16 h-16 object-cover rounded border" 
+                            className={`w-16 h-16 object-cover rounded border ${image.isPrimary === true ? 'ring-2 ring-blue-500' : ''}`} 
                             onError={(e) => {
                               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTI4IDI4TDQ0IDQ0IiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik00NCAyOEwyOCA0NCIgc3Ryb2tlPSIjOUNBM0FGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K';
                             }}
                           />
-                          {image.isPrimary === true && (
-                            <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded-full">
-                              ★
-                            </div>
-                          )}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm text-gray-600">
@@ -1066,12 +1132,19 @@ const AdminProducts = () => {
                         <button
                           type="button"
                           onClick={() => {
+                            console.log('=== SET PRIMARY IMAGE DEBUG ===');
+                            console.log('Current images:', newProduct.images);
+                            console.log('Setting index as primary:', index);
+                            
                             // Functional update for add modal
                             setNewProduct(prevProduct => {
                               const updatedImages = prevProduct.images.map((img, i) => ({
                                 ...img,
                                 isPrimary: i === index
                               }));
+                              
+                              console.log('Updated images:', updatedImages);
+                              console.log('Primary image:', updatedImages[index]);
                               
                               setForceUpdate(prev => prev + 1); // Force re-render
                               return {
@@ -1346,7 +1419,6 @@ const AdminProducts = () => {
                     value={editingProduct.name || ''}
                     onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
                 <div>
@@ -1355,8 +1427,8 @@ const AdminProducts = () => {
                     value={editingProduct.category}
                     onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   >
+                    <option value="">Select Category</option>
                     {CATEGORY_OPTIONS.map(category => (
                       <option key={category} value={category}>{category}</option>
                     ))}
@@ -1370,7 +1442,6 @@ const AdminProducts = () => {
                     value={editingProduct.meterial || ''}
                     onChange={(e) => setEditingProduct({...editingProduct, meterial: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
               </div>
@@ -1382,7 +1453,6 @@ const AdminProducts = () => {
                   onChange={(e) => setEditingProduct({...editingProduct, description: e.target.value})}
                   rows={3}
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
                 />
               </div>
 
@@ -1396,7 +1466,6 @@ const AdminProducts = () => {
                     value={editingProduct.price || ''}
                     onChange={(e) => setEditingProduct({...editingProduct, price: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
                 <div>
@@ -1416,7 +1485,6 @@ const AdminProducts = () => {
                     value={editingProduct.stock || ''}
                     onChange={(e) => setEditingProduct({...editingProduct, stock: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
                   />
                 </div>
               </div>
@@ -1445,16 +1513,11 @@ const AdminProducts = () => {
                           <img 
                             src={getImageUrl(image.url)} 
                             alt={image.alt} 
-                            className="w-16 h-16 object-cover rounded border" 
+                            className={`w-16 h-16 object-cover rounded border ${image.isPrimary === true ? 'ring-2 ring-blue-500' : ''}`} 
                             onError={(e) => {
                               e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTI4IDI4TDQ0IDQ0IiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik00NCAyOEwyOCA0NCIgc3Ryb2tlPSIjOUNBM0FGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4K';
                             }}
                           />
-                          {image.isPrimary === true && (
-                            <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs px-1 py-0.5 rounded-full">
-                              ★
-                            </div>
-                          )}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm text-gray-600">
