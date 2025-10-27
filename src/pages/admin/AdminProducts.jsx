@@ -18,6 +18,13 @@ const CATEGORY_OPTIONS = [
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
+  
+  // Function to truncate long text
+  const truncateText = (text, maxLength = 50) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [localSearchTerm, setLocalSearchTerm] = useState('');
@@ -701,8 +708,8 @@ const AdminProducts = () => {
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {product.name}
+                        <div className="text-sm font-medium text-gray-900" title={product.name}>
+                          {truncateText(product.name, 40)}
                         </div>
                         
                       </div>
@@ -799,8 +806,8 @@ const AdminProducts = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-sm font-semibold text-gray-900 leading-tight mb-1 truncate">
-                          {product.name}
+                        <h3 className="text-sm font-semibold text-gray-900 leading-tight mb-1" title={product.name}>
+                          {truncateText(product.name, 35)}
                         </h3>
                         <p className="text-xs text-gray-600 mb-2">
                           {product.category}
@@ -878,9 +885,9 @@ const AdminProducts = () => {
           {/* Mobile Info */}
           <div className="text-center">
             <p className="text-xs text-gray-700">
-              Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
+              Showing <span className="font-medium">{((currentPage - 1) * 10) + 1}</span> to{' '}
               <span className="font-medium">
-                {Math.min(currentPage * 5, totalProducts)}
+                {Math.min(currentPage * 10, totalProducts)}
               </span>{' '}
               of <span className="font-medium">{totalProducts}</span> results
             </p>
@@ -941,9 +948,9 @@ const AdminProducts = () => {
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-gray-700">
-              Showing <span className="font-medium">{((currentPage - 1) * 5) + 1}</span> to{' '}
+              Showing <span className="font-medium">{((currentPage - 1) * 10) + 1}</span> to{' '}
               <span className="font-medium">
-                {Math.min(currentPage * 5, totalProducts)}
+                {Math.min(currentPage * 10, totalProducts)}
               </span>{' '}
               of <span className="font-medium">{totalProducts}</span> results
             </p>
