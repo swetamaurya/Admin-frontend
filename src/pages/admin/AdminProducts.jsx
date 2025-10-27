@@ -12,6 +12,7 @@ const CATEGORY_OPTIONS = [
   'Aasan Mats',
   'In Door Mats',
   'Out Door Mats',
+  'Animal Rugs',
    
 ];
 
@@ -73,7 +74,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await adminApi.getProducts(currentPage, 5, searchTerm);
+      const response = await adminApi.getProducts(currentPage, 10, searchTerm);
       
       // Debug: Check first product images
       if (response.data && response.data.length > 0) {
@@ -104,11 +105,11 @@ const AdminProducts = () => {
   const handleAddProduct = async (e) => {
     e.preventDefault();
     
-    console.log('=== PRODUCT CREATION DEBUG ===');
-    console.log('Form data:', newProduct);
-    console.log('Category value:', newProduct.category);
-    console.log('Category type:', typeof newProduct.category);
-    console.log('Category length:', newProduct.category?.length);
+    // console.log('=== PRODUCT CREATION DEBUG ===');
+    // console.log('Form data:', newProduct);
+    // console.log('Category value:', newProduct.category);
+    // console.log('Category type:', typeof newProduct.category);
+    // console.log('Category length:', newProduct.category?.length);
     
     // Frontend validation - Check each field individually
     const validationErrors = [];
@@ -179,7 +180,7 @@ const AdminProducts = () => {
       sizes: finalSizes.filter(size => size && size.trim())
     };
     
-    console.log('Final product data being sent:', cleanProduct);
+    // console.log('Final product data being sent:', cleanProduct);
     
     try {
       const response = await adminApi.createProduct(cleanProduct);
@@ -315,10 +316,10 @@ const AdminProducts = () => {
     };
 
     // Debug: Log data being sent to backend
-    console.log('=== EDIT PRODUCT - SENDING DATA ===');
-    console.log('Product ID:', editingProduct._id);
-    console.log('Images being sent:', JSON.stringify(cleanEditingProduct.images, null, 2));
-    console.log('Primary images:', cleanEditingProduct.images?.filter(img => img.isPrimary === true));
+    // console.log('=== EDIT PRODUCT - SENDING DATA ===');
+    // console.log('Product ID:', editingProduct._id);
+    // console.log('Images being sent:', JSON.stringify(cleanEditingProduct.images, null, 2));
+    // console.log('Primary images:', cleanEditingProduct.images?.filter(img => img.isPrimary === true));
     
     try {
       const response = await adminApi.updateProduct(editingProduct._id, cleanEditingProduct);
