@@ -16,6 +16,15 @@ const CATEGORY_OPTIONS = [
    
 ];
 
+const MATERIAL_OPTIONS = [
+  'Cotton',
+  'Wool',
+  'Silk',
+  'Soft Silk',
+  'Wool And Cotton',
+  'Other'
+];
+
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   
@@ -1046,12 +1055,16 @@ const AdminProducts = () => {
            
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Material *</label>
-                  <input
-                    type="text"
+                  <select
                     value={newProduct.meterial}
                     onChange={(e) => setNewProduct({...newProduct, meterial: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+                  >
+                    <option value="">Select Material</option>
+                    {MATERIAL_OPTIONS.map(material => (
+                      <option key={material} value={material}>{material}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -1445,12 +1458,16 @@ const AdminProducts = () => {
               
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Material *</label>
-                  <input
-                    type="text"
+                  <select
                     value={editingProduct.meterial || ''}
                     onChange={(e) => setEditingProduct({...editingProduct, meterial: e.target.value})}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+                  >
+                    <option value="">Select Material</option>
+                    {MATERIAL_OPTIONS.map(material => (
+                      <option key={material} value={material}>{material}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
