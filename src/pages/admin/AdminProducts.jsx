@@ -68,6 +68,8 @@ const AdminProducts = () => {
     images: [],
     colors: [],
     sizes: [],
+    rating: '',
+    reviewsCount: '',
     isActive: true,
     isFeatured: false
   });
@@ -221,6 +223,8 @@ const AdminProducts = () => {
           images: [],
           colors: [],
           sizes: [],
+          rating: '',
+          reviewsCount: '',
           isActive: true,
           isFeatured: false
         });
@@ -1122,6 +1126,60 @@ const AdminProducts = () => {
                 />
               </div>
 
+              {/* Rating and Reviews */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Product Rating (0-5)</label>
+                  <div className="mt-1 flex items-center space-x-2">
+                    <input
+                      type="number"
+                      min="0"
+                      max="5"
+                      step="0.1"
+                      value={newProduct.rating}
+                      onChange={(e) => {
+                        if (e.target.value === '') {
+                          setNewProduct({...newProduct, rating: ''});
+                        } else {
+                          const value = Math.min(5, Math.max(0, parseFloat(e.target.value) || 0));
+                          setNewProduct({...newProduct, rating: value});
+                        }
+                      }}
+                      className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="e.g., 4.5"
+                    />
+                    {newProduct.rating !== '' && (
+                      <span className="text-2xl">
+                        {'⭐'.repeat(Math.round(newProduct.rating))}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {newProduct.rating !== '' ? `Current rating: ${parseFloat(newProduct.rating).toFixed(1)}/5` : 'No rating set'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Number of Reviews</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={newProduct.reviewsCount}
+                    onChange={(e) => {
+                      if (e.target.value === '') {
+                        setNewProduct({...newProduct, reviewsCount: ''});
+                      } else {
+                        setNewProduct({...newProduct, reviewsCount: Math.max(0, parseInt(e.target.value) || 0)});
+                      }
+                    }}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., 45"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    {newProduct.reviewsCount !== '' ? `${newProduct.reviewsCount} total reviews` : 'No reviews yet'}
+                  </p>
+                </div>
+              </div>
+
               {/* Images */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -1523,6 +1581,60 @@ const AdminProducts = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Waterproof, Anti-slip, etc."
                 />
+              </div>
+
+              {/* Rating and Reviews */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Product Rating (0-5)</label>
+                  <div className="mt-1 flex items-center space-x-2">
+                    <input
+                      type="number"
+                      min="0"
+                      max="5"
+                      step="0.1"
+                      value={editingProduct.rating || ''}
+                      onChange={(e) => {
+                        if (e.target.value === '') {
+                          setEditingProduct({...editingProduct, rating: ''});
+                        } else {
+                          const value = Math.min(5, Math.max(0, parseFloat(e.target.value) || 0));
+                          setEditingProduct({...editingProduct, rating: value});
+                        }
+                      }}
+                      className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="e.g., 4.5"
+                    />
+                    {editingProduct.rating !== '' && editingProduct.rating !== 0 && (
+                      <span className="text-2xl">
+                        {'⭐'.repeat(Math.round(editingProduct.rating))}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {editingProduct.rating !== '' && editingProduct.rating !== 0 ? `Current rating: ${parseFloat(editingProduct.rating).toFixed(1)}/5` : 'No rating set'}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Number of Reviews</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editingProduct.reviewsCount || ''}
+                    onChange={(e) => {
+                      if (e.target.value === '') {
+                        setEditingProduct({...editingProduct, reviewsCount: ''});
+                      } else {
+                        setEditingProduct({...editingProduct, reviewsCount: Math.max(0, parseInt(e.target.value) || 0)});
+                      }
+                    }}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="e.g., 45"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    {editingProduct.reviewsCount !== '' && editingProduct.reviewsCount !== 0 ? `${editingProduct.reviewsCount} total reviews` : 'No reviews yet'}
+                  </p>
+                </div>
               </div>
 
               {/* Images */}
